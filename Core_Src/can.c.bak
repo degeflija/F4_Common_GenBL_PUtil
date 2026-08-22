@@ -2,7 +2,6 @@
 #include "main.h"
 #include "queue.h"
 #include "Flash_F4xx_Lib.h"
-//
 
 extern  QueueHandle_t CAN1_rxQueue_Id;
 extern  QueueHandle_t CAN2_rxQueue_Id;
