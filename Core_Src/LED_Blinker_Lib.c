@@ -24,13 +24,28 @@
   } LED_Blinker_Def_t;
   */
 
-  LED_Blinker_Def_t   F4_LED[4];
+  //
+  //  LINT-Fix 3 : Arraygroesse als Konstante, damit die Bereichspruefungen
+  //  in den drei Funktionen unten nicht wieder auseinanderlaufen koennen.
+  //
+  #define  c_no_of_F4_LEDs   4
+
+  LED_Blinker_Def_t   F4_LED[c_no_of_F4_LEDs];
 
 //  ****************************************************************************
 //
 void Initialize_Flash_Sequence ( uint8_t LED_Index, uint16_t On_Intval, uint16_t Off_Intval )
 {
-  ASSERT ( ( LED_Index >= 0 ) && ( LED_Index <= 3 ) );
+  //
+  //  LINT-Fix 3 : LED_Index ist uint8_t, ">= 0" prueft also nichts.
+  //  Seit ASSERT nicht mehr hart stoppt (Fix A3) wuerde ein zu grosser
+  //  Index still in F4_LED[4] hinein- bzw. dahinterschreiben.
+  //
+  ASSERT ( LED_Index < c_no_of_F4_LEDs );
+  if ( LED_Index >= c_no_of_F4_LEDs )
+  {
+    return;
+  }
   F4_LED[LED_Index].ThePin        = GPIO_PIN_12 << LED_Index;
   F4_LED[LED_Index].On_Off        = c_On;
   F4_LED[LED_Index].On_Interval   = On_Intval;
@@ -42,7 +57,17 @@ void Initialize_Flash_Sequence ( uint8_t LED_Index, uint16_t On_Intval, uint16_t
 //
 void Run_Flash_Sequence ( uint8_t LED_Index )
 {
-  ASSERT ( ( LED_Index >= 0 ) && ( LED_Index <= 3 ) );
+  //
+  //  LINT-Fix 3 : LED_Index ist uint8_t, ">= 0" prueft also nichts, und die
+  //  fest eingetippte 3 lief neben der Arraygroesse her.
+  //  Seit ASSERT nicht mehr hart stoppt (Fix A3) wuerde ein zu grosser Index
+  //  still hinter F4_LED[] greifen.
+  //
+  ASSERT ( LED_Index < c_no_of_F4_LEDs );
+  if ( LED_Index >= c_no_of_F4_LEDs )
+  {
+    return;
+  }
 
   uint8_t ix = HAL_GPIO_ReadPin ( LED_Port, F4_LED[LED_Index].ThePin );
   if ( ix )
@@ -67,7 +92,17 @@ void Run_Flash_Sequence ( uint8_t LED_Index )
 //
 void Stop_Flash_Sequence ( uint8_t LED_Index )
 {
-  ASSERT ( ( LED_Index >= 0 ) && ( LED_Index <= 3 ) );
+  //
+  //  LINT-Fix 3 : LED_Index ist uint8_t, ">= 0" prueft also nichts, und die
+  //  fest eingetippte 3 lief neben der Arraygroesse her.
+  //  Seit ASSERT nicht mehr hart stoppt (Fix A3) wuerde ein zu grosser Index
+  //  still hinter F4_LED[] greifen.
+  //
+  ASSERT ( LED_Index < c_no_of_F4_LEDs );
+  if ( LED_Index >= c_no_of_F4_LEDs )
+  {
+    return;
+  }
   F4_LED[LED_Index].On_Off = c_Off;
   HAL_GPIO_WritePin ( LED_Port, F4_LED[LED_Index].ThePin, GPIO_PIN_RESET );
 }
