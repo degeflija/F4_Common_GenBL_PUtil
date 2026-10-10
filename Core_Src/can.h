@@ -44,12 +44,6 @@ HAL_StatusTypeDef CAN_Init(CAN_HandleTypeDef *hcan);
 HAL_StatusTypeDef CAN_Send(CAN_HandleTypeDef *hcan, CAN_Packet_t *p );
 HAL_StatusTypeDef CAN_Receive(CAN_HandleTypeDef *hcan, CAN_Packet_t *p );
 
-//  10.10.2026 : CAN-Selbstueberwachung, siehe Kopf von can.c
-//  CAN_Supervise () alle 10 ms aus dem Task CAN_Bus_Sender aufrufen.
-//
-void CAN_Supervise ( CAN_HandleTypeDef *hcan );
-bool CAN_Reinit    ( CAN_HandleTypeDef *hcan );
-
 
 #ifdef __cplusplus
 }
