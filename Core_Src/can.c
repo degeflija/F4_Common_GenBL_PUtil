@@ -83,7 +83,20 @@ HAL_StatusTypeDef CAN_Init(CAN_HandleTypeDef *hcan)
     if ( ! UNDER_DEBUGGER() )
     {
       HAL_Delay ( 300 );
+#ifdef BUILD_F4_AUDIO
+      //
+      //  12.10.2026 : Im Audio ECHTER Reset statt Software-Sprung.
+      //  GenBL hat die Reset-Flags beim ersten Anlauf schon gelesen und
+      //  geloescht. Nach einem Software-Sprung sieht GenBL deshalb
+      //  RESET_CAUSE_UNKNOWN, springt nicht ins Audio und wartet endlos
+      //  auf ein Neu-Flashen ( Audio stumm, GenBL-HeartBeat 0x200 laeuft ).
+      //  NVIC_SystemReset() setzt RCC_FLAG_SFTRST -> GenBL springt ins Audio.
+      //  GenBL selbst bleibt beim Software-Sprung ( Weg fuer 0x330 ).
+      //
+      NVIC_SystemReset ();
+#else
       Bootloader_JumpToColdStart ();
+#endif
     }
   }
 
